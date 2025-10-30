@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Subtitles Karaoke</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <main class="wrap">
+    <h1>Subtitles Karaoke</h1>
+    <p class="muted">Upload MP4 ≤ 10 MB. Output: MP4 1080p with karaoke subtitles.</p>
+
+    <form id="form" enctype="multipart/form-data">
+      <input type="file" id="file" accept="video/mp4" />
+      <button id="start" type="button" disabled>Start</button>
+    </form>
+
+    <div id="status"></div>
+  </main>
+  <script src="./app.js"></script>
+</body>
+</html>
