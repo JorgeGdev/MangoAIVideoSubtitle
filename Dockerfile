@@ -6,13 +6,13 @@ RUN apk add --no-cache ffmpeg
 # Crear directorio de trabajo
 WORKDIR /app
 
-# Copiar package files
-COPY package*.json ./
+# Copiar primero package.json y package-lock.json específicamente
+COPY package.json package-lock.json ./
 
 # Instalar dependencias
-RUN npm ci --only=production
+RUN npm ci --omit=dev
 
-# Copiar código fuente
+# Copiar todo el código fuente
 COPY . .
 
 # Crear directorio tmp
