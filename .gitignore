@@ -10,7 +10,7 @@ tmp/
 *.mp4
 *.ass
 *.txt
-*.json
+tmp/*.json
 
 # Logs
 *.log
