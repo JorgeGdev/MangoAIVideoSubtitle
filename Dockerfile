@@ -1,22 +1,18 @@
-FROM node:18-alpine
+# Antes: FROM node:18-alpine
+FROM node:20-alpine
 
-# Instalar FFmpeg
-RUN apk add --no-cache ffmpeg
+# (Opcional si usas el ffmpeg del sistema)
+# RUN apk add --no-cache ffmpeg
 
-# Crear directorio de trabajo
 WORKDIR /app
 
-# Copiar TODO primero (simple y funcional)
+# Mejor caché de deps
+COPY package*.json ./
+RUN npm ci --omit=dev
+
+# Copia el resto
 COPY . .
 
-# Instalar dependencias
-RUN npm install --production
-
-# Crear directorio tmp
-RUN mkdir -p tmp
-
-# Exponer puerto
+ENV NODE_ENV=production
 EXPOSE 3000
-
-# Comando de inicio
-CMD ["npm", "start"]
+CMD ["node", "server.js"]

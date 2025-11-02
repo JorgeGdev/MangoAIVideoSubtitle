@@ -1,0 +1,13 @@
+{
+  "ignore": [
+    "tmp/**",
+    "public/**",
+    "fonts/**"
+  ],
+  "watch": [
+    "server.js",
+    "routes",
+    "services"
+  ],
+  "ext": "js,json"
+}
