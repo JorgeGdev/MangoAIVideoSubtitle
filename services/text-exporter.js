@@ -74,7 +74,7 @@ function segmentWords(words, opts) {
     if (shouldBreak) {
       finalizeLine(lines, current);
       current = initLine(w);
-      addWord(current, w);
+      
     } else {
       addWord(current, w);
     }

@@ -95,7 +95,6 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
     if (shouldBreak) {
       finalizeLine(rawLines, current);
       current = initLine(w);
-      addWord(current, w);
     } else {
       addWord(current, w);
     }
