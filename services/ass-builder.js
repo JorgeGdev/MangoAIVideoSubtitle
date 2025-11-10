@@ -95,6 +95,7 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
     if (shouldBreak) {
       finalizeLine(rawLines, current);
       current = initLine(w);
+      addWord(current, w);
     } else {
       addWord(current, w);
     }
@@ -140,13 +141,16 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 }
 
 function initLine(firstWord) {
-  return {
+  const line = {
     words: [],
     start: firstWord.start,
     end: firstWord.end,
     textLength: 0
   };
+  addWord(line, firstWord); // 👈 agrega la primera palabra de inmediato
+  return line;
 }
+
 
 function addWord(line, w) {
   line.words.push(w);

@@ -74,6 +74,7 @@ function segmentWords(words, opts) {
     if (shouldBreak) {
       finalizeLine(lines, current);
       current = initLine(w);
+      addWord(current, w);
     } else {
       addWord(current, w);
     }
@@ -84,13 +85,16 @@ function segmentWords(words, opts) {
 }
 
 function initLine(firstWord) {
-  return {
+  const line = {
     words: [],
     start: firstWord.start,
     end: firstWord.end,
     textLength: 0
   };
+  addWord(line, firstWord); // 👈 agrega la primera palabra de inmediato
+  return line;
 }
+
 
 function addWord(line, w) {
   line.words.push(w);
