@@ -1,50 +1,58 @@
-# 🎬 Subtitles Generator
+# 🎬 MangoAI Video Subtitle Generator
 
-Generador de subtítulos karaoke automático con OpenAI Whisper y FFmpeg. Sube un video MP4, obtén subtítulos quemados en el video + archivo de texto con los subtítulos.
+Generador avanzado de subtítulos estilo karaoke que combina **OpenAI Whisper**, **FFmpeg** y **Node.js** para crear videos con subtítulos quemados (burned-in) y efectos de transición profesionales con crossfade automático.
 
-## ✨ Características
+[![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg)](https://nodejs.org/)
+[![FFmpeg](https://img.shields.io/badge/FFmpeg-6.0+-blue.svg)](https://ffmpeg.org/)
+[![OpenAI](https://img.shields.io/badge/OpenAI-Whisper-orange.svg)](https://openai.com/)
+[![License](https://img.shields.io/badge/License-ISC-yellow.svg)](LICENSE)
 
-- 🎥 **Genera video** con subtítulos karaoke quemados (estilo Montserrat)
-- 📄 **Archivo de texto** con subtítulos y timestamps `[MM:SS] Texto`
-- 🤖 **OpenAI Whisper** para transcripción automática
-- 🎨 **Diseño minimalista** en negro y morado
-- ⚡ **Procesamiento rápido** para videos de 10-30 segundos
-- 🔄 **Descarga automática** de archivos generados
+## 🚀 Características Principales
 
-## 🚀 Demo en vivo
+- 🎥 **Video con subtítulos karaoke quemados** (estilo Montserrat profesional)
+- 📄 **Múltiples formatos de exportación** (TXT, Markdown, transcripción completa)
+- 🎭 **Crossfade automático** con video outro y transición suave
+- 🤖 **OpenAI Whisper** para transcripción automática de alta precisión
+- 🎨 **Diseño minimalista** con UI moderna y responsiva
+- ⚡ **Procesamiento optimizado** para videos de 10-30 segundos
+- 🔄 **Pipeline automatizado** desde upload hasta descarga
+- 🎯 **Escalado inteligente** que se adapta a cualquier formato de video
+- � **Burn-in profesional** con configuración avanzada de estilos
+- 📱 **Compatibilidad universal** (yuv420p para web/móvil)
 
-**Railway:** [Próximamente]
+## 🏗️ Arquitectura Completa del Proyecto
 
-## 🛠️ Stack Tecnológico
-
-- **Backend:** Node.js + Express
-- **Transcripción:** OpenAI Whisper API
-- **Video:** FFmpeg + fluent-ffmpeg
-- **Frontend:** HTML/CSS/JS vanilla
-- **Deploy:** Railway (con soporte FFmpeg nativo)
-
-Estructura de proyecto (web aparte)
-subtitles-karaoke/
-  server.js              # Express: sirve el frontend y expone /api/subtitle
-  routes/
-    jobs.js              # POST /api/subtitle  (upload MP4 → procesa → devuelve job/result)
-  services/
-    transcriber.js       # llama Whisper (OpenAI) → palabras con timestamps
-    ass-builder.js       # build .ass (Montserrat, outline/shadow/align/margin)
-    burner.js            # FFmpeg: burn-in .ass + downscale 1080p CRF 23
-  tmp/                   # archivos temporales (mp4 in, wav, ass, mp4 out)
-  public/
-    index.html           # UI minimal (negro + morado)
-    styles.css
-    app.js               # fetch al backend + estado
-  .env.example           # OPENAI_API_KEY
-  package.json           # (puede ser propio o usar el de tu monorepo)
-  README.md
-
-
-Todo esto usa solo Node con tus libs ya declaradas (Express, Multer, fluent-ffmpeg, @ffmpeg-installer/ffmpeg, OpenAI). No metemos Python ni frameworks extra. 
-
-package
+```
+📦 MangoAIVideoSubtitle/
+├── 🚀 server.js                    # Servidor Express principal
+├── 📋 package.json                 # Dependencias y configuración NPM
+├── 🔧 nodemon.json                 # Configuración de desarrollo con hot reload
+├── 🐳 Dockerfile                   # Contenedorización para despliegue
+├── 🚂 railway.json                 # Configuración específica de Railway
+├── 🌍 .env                         # Variables de entorno (LOCAL - NO SUBIR)
+├── 📄 .env.example                 # Plantilla de variables de entorno
+├── 📁 public/                      # Frontend estático
+│   ├── 🏠 index.html              # Interfaz principal de usuario
+│   ├── 🎨 styles.css              # Estilos CSS modernos y responsivos
+│   ├── ⚡ app.js                   # Lógica del cliente JavaScript
+│   └── 📂 assets/
+│       └── 🎬 outro.mp4           # Video outro para transiciones automáticas
+├── 🛣️ routes/
+│   └── 🔀 jobs.js                  # API endpoints y lógica de procesamiento
+├── ⚙️ services/                    # Módulos especializados de procesamiento
+│   ├── 🎙️ transcriber.js          # Integración con OpenAI Whisper
+│   ├── 📄 ass-builder.js          # Generación avanzada de archivos .ASS
+│   ├── 📝 text-exporter.js        # Exportación múltiple de formatos
+│   ├── 🔥 burner.js                # Burn-in de subtítulos con FFmpeg
+│   └── 🎭 outro.js                 # Crossfade y transiciones profesionales
+├── 🔤 fonts/                       # Fuentes personalizadas para subtítulos
+├── 📂 tmp/                         # Archivos temporales (auto-limpieza)
+│   ├── 🎬 *.mp4                   # Videos procesados y finales
+│   ├── 📄 *.ass                   # Archivos de subtítulos ASS
+│   ├── 📝 *.txt                   # Subtítulos en formato texto
+│   └── 📊 *.words.json            # Datos de transcripción detallados
+└── 📖 README.md                    # Documentación completa (este archivo)
+```
 
 Contratos (sin código, para que me confirmes)
 1) Endpoint principal
@@ -249,114 +257,247 @@ Se usa para escalar tipografía y margen.
 nodemon.json
 Ignora cambios en tmp/, public/, fonts/ para evitar reinicios durante el proceso y cortes de conexión.
 Observa solo server.js, routes, services.
-Instalación y requisitos
-Node.js 18 o superior.
-FFmpeg incluido por @ffmpeg-installer/ffmpeg (no hace falta instalar FFmpeg por separado).
-Cuenta de OpenAI con OPENAI_API_KEY activa.
-Ejecución local
-Instalar dependencias:
+## 🔧 Instalación y Configuración
+
+### 📋 Requisitos del Sistema
+- **Node.js** 18.0.0+ y npm 8.0.0+
+- **OpenAI API Key** activa con acceso a Whisper
+- **Git** para clonación del repositorio
+- **10 MB** de espacio libre para archivos temporales
+
+### 1️⃣ Clonar el Repositorio
+```bash
+git clone https://github.com/JorgeGdev/MangoAIVideoSubtitle.git
+cd MangoAIVideoSubtitle
+```
+
+### 2️⃣ Instalar Dependencias
+```bash
 npm install
+```
+> **Nota:** FFmpeg se instala automáticamente via `@ffmpeg-installer/ffmpeg` y `ffmpeg-static`
 
-Crear .env en la raíz:
+### 3️⃣ Configurar Variables de Entorno
+Crea un archivo `.env` basado en `.env.example`:
+
+```bash
+cp .env.example .env
+```
+
+**Configura tu API key de OpenAI:**
+```env
+OPENAI_API_KEY=sk-proj-tu-api-key-aqui
 PORT=3000
-OPENAI_API_KEY=sk-...
+```
 
-
-Iniciar en desarrollo:
-
+### 4️⃣ Ejecutar en Desarrollo
+```bash
 npm run dev
+```
+> **Hot reload** activado - los cambios se reflejan automáticamente
 
+### 5️⃣ Ejecutar en Producción
+```bash
+npm start
+```
 
-Abrir:
+### 6️⃣ Verificar Instalación
+Abre tu navegador en: `http://localhost:3000`
 
-http://localhost:3000
+---
 
-Uso desde el navegador
-1. Selecciona un MP4 pequeño (≤ 10 MB).
-2. Clic en Start.
-3. Espera el mensaje Done.
-4. Descarga los archivos generados:
-   - **Video MP4** con subtítulos quemados
-   - **Archivo TXT** con los subtítulos y timestamps
-   - **Archivo Markdown** con los subtítulos formateados
-   - **Transcripción completa** en texto plano
+## 🎮 Guía de Uso Completa
 
-El video final tendrá subtítulos karaoke en Montserrat.
+### 🌐 **Interfaz Web Intuitiva**
+1. **📁 Selecciona** tu archivo MP4 (máximo 10 MB)
+2. **▶️ Presiona** el botón "Start" para iniciar
+3. **⏳ Observa** el progreso en tiempo real
+4. **📥 Descarga** múltiples formatos cuando esté listo
 
-API
+### 📊 **Formatos de Salida**
+- **🎬 Video MP4** - Con subtítulos quemados y outro
+- **📄 Archivo TXT** - Subtítulos con timestamps `[MM:SS]`
+- **📋 Markdown** - Formato enriquecido con metadatos
+- **📝 Transcripción** - Texto plano sin timestamps
+
+### 🎯 **Especificaciones Técnicas**
+- **Duración recomendada:** 10-30 segundos
+- **Tamaño máximo:** 10 MB
+- **Formatos aceptados:** MP4 únicamente
+- **Resolución de salida:** Hasta 1080p (escalado automático)
+- **Calidad:** CRF 23 (balance óptimo peso/calidad)
+
+## 📡 API Documentation
+
+### 🔼 **Upload Endpoint**
+```http
 POST /api/subtitle
-form-data: file (MP4 ≤ 10 MB)
-res 200:
+```
+**Content-Type:** `multipart/form-data`
 
+**Parámetros:**
+- `file` (required) - Archivo MP4, máximo 10 MB
+
+**Respuesta exitosa (200):**
+```json
 {
   "status": "uploaded",
-  "id": "1760926365000_abcd1234",
-  "filename": "1760926365000_abcd1234.mp4",
-  "sizeBytes": 6403712,
-  "path": "E:/.../tmp/1760926365000_abcd1234.mp4"
+  "id": "1762836970114_664ccde39cbd4c08",
+  "filename": "1762836970114_664ccde39cbd4c08.mp4",
+  "sizeBytes": 8547291,
+  "path": "/tmp/1762836970114_664ccde39cbd4c08.mp4"
 }
+```
 
+### ⚡ **Process Endpoint**
+```http
 POST /api/subtitle/:id/process
+```
+**Content-Type:** `application/x-www-form-urlencoded`
 
-body opcional:
+**Parámetros opcionales:**
+- `filename` - Nombre del archivo (para robustez)
+- `style` - Configuración de estilos en JSON
 
-filename: por robustez,
-
-style: JSON string para sobreescribir estilo (ver más abajo).
-
-res 200:
-
+**Respuesta exitosa (200):**
+```json
 {
   "ok": true,
-  "id": "1760926365000_abcd1234",
-  "downloadUrl": "/api/subtitle/1760926365000_abcd1234/download",
-  "txtUrl": "/api/subtitle/1760926365000_abcd1234/download/txt",
-  "mdUrl": "/api/subtitle/1760926365000_abcd1234/download/md",
-  "transcriptUrl": "/api/subtitle/1760926365000_abcd1234/download/transcript"
+  "id": "1762836970114_664ccde39cbd4c08",
+  "downloadUrl": "/api/subtitle/1762836970114_664ccde39cbd4c08/download",
+  "txtUrl": "/api/subtitle/1762836970114_664ccde39cbd4c08/download/txt",
+  "mdUrl": "/api/subtitle/1762836970114_664ccde39cbd4c08/download/md",
+  "transcriptUrl": "/api/subtitle/1762836970114_664ccde39cbd4c08/download/transcript"
 }
+```
 
-### GET /api/subtitle/:id/download
-Devuelve el MP4 final con subtítulos quemados.
+### 📥 **Download Endpoints**
 
-### GET /api/subtitle/:id/download/txt
-Devuelve un archivo de texto plano (.txt) con los subtítulos y timestamps en formato `[MM:SS] Texto`.
+#### **Video Principal**
+```http
+GET /api/subtitle/:id/download
+```
+Devuelve el video MP4 final con subtítulos y outro.
 
-### GET /api/subtitle/:id/download/md
-Devuelve un archivo Markdown (.md) con los subtítulos formateados, timestamps e información de generación.
+#### **Subtítulos TXT**
+```http
+GET /api/subtitle/:id/download/txt
+```
+Formato: `[MM:SS] Texto de subtítulo`
 
-### GET /api/subtitle/:id/download/transcript
-Devuelve la transcripción completa en texto plano sin timestamps.
+#### **Subtítulos Markdown**
+```http
+GET /api/subtitle/:id/download/md
+```
+Incluye metadatos y formato enriquecido.
 
-## Cómo funciona por dentro
+#### **Transcripción Completa**
+```http
+GET /api/subtitle/:id/download/transcript
+```
+Texto plano sin timestamps.
 
-Upload
-Guardamos el archivo en tmp/ con nombre ID.mp4. Validamos tipo y tamaño.
-Transcribe
-Tomamos el audio del MP4 y pedimos transcripción a Whisper. Obtenemos texto y segmentos temporales. Si no hay palabra por palabra nativa, distribuimos tiempos dentro de cada segmento.
-Segmentación
-Convertimos la lista de palabras en bloques o líneas con heurísticas simples: pausas, duración y caracteres.
-.ASS karaoke
-Por cada línea generamos un Dialogue con override tags \k por palabra. El color de relleno se anima como karaoke.
-Render
-Con FFmpeg:
-Escalamos el video para encajar en 1080p con relación de aspecto,
-Aplicamos el filtro subtitles=archivo.ass,
-Codificamos con libx264 a CRF 23 y mantenemos audio con copy.
-Descarga
-Streameamos el MP4 final y limpiamos cuando sea necesario.
-Algoritmo de segmentación karaoke
-Reglas por defecto:
-Pausa entre palabras mayor a 0.5 s → corte de línea,
-Duración del bloque mayor a 2.8 s → corte de línea,
-Longitud acumulada mayor a 42 caracteres → corte de línea.
-Esto evita mostrar todo el texto a la vez y produce bloques de lectura cómoda. Puedes ajustar estos valores en buildASS con segment: { gapThresholdSec, maxLineDurSec, maxChars }.
-Escalado de tipografía y margen vertical
-Para que el texto se vea bien en videos verticales u horizontales:
-Leemos la altura final del video con ffprobe y fitBox a 1080p.
-Definimos:
-fontSize = max(36, round(altura * 0.055))
-marginV = round(altura * 0.12) para subir el texto un poco.
-Estos parámetros se pasan a buildASS. Puedes cambiarlos a tu gusto.
+### 💚 **Health Check**
+```http
+GET /health
+```
+**Respuesta:**
+```json
+{ "ok": true }
+```
+
+---
+
+## ⚙️ Módulos de Procesamiento Especializados
+
+### 🎙️ **Transcriber** (`services/transcriber.js`)
+**Funcionalidad:**
+- Integración directa con OpenAI Whisper API
+- Transcripción word-level con timing preciso
+- Distribución inteligente de tiempos en segmentos
+- Manejo robusto de errores de API
+- Optimización para clips de 10-30 segundos
+
+**Configuración:**
+```javascript
+{
+  model: 'whisper-1',
+  response_format: 'verbose_json',
+  temperature: 0  // Máxima precisión
+}
+```
+
+### 📄 **ASS Builder** (`services/ass-builder.js`)
+**Funcionalidad:**
+- Generación avanzada de archivos .ASS para karaoke
+- Segmentación inteligente por pausas, duración y longitud
+- Anti-overlap automático para legibilidad
+- Configuración granular de estilos visuales
+- Timing optimizado para efectos karaoke word-by-word
+
+**Algoritmo de Segmentación:**
+```javascript
+{
+  gapThresholdSec: 0.5,    // Pausa mínima para nuevo segmento
+  maxLineDurSec: 2.8,      // Duración máxima por línea
+  maxChars: 42,            // Caracteres máximos por línea
+  minWordSec: 0.06,        // Duración mínima por palabra
+  leadSec: 0.0,            // Tiempo de entrada
+  tailSec: 0.12,           // Tiempo de salida
+  warmupCs: 6,             // Calentamiento en centésimas
+  minInterGapSec: 0.06     // Gap mínimo entre palabras
+}
+```
+
+### 📝 **Text Exporter** (`services/text-exporter.js`)
+**Funcionalidad:**
+- Exportación multi-formato (TXT, MD, transcripción)
+- Preservación de estructura temporal
+- Metadatos automáticos con información del proceso
+- Timestamps formateados para fácil lectura
+- Segmentación coherente con el video
+
+### 🔥 **Burner** (`services/burner.js`)
+**Funcionalidad:**
+- Burn-in profesional de subtítulos con FFmpeg
+- Escalado automático y adaptativo para cualquier resolución
+- Preservación inteligente de aspect ratio
+- Configuración avanzada de calidad (CRF 23)
+- Optimización de codecs para máxima compatibilidad
+
+**Pipeline de Renderizado:**
+1. Análisis de dimensiones del video origen
+2. Cálculo de escalado para fit en 1080p
+3. Aplicación de filtro de subtítulos con libass
+4. Codificación con libx264 y preservación de audio
+5. Optimización para streaming web (faststart)
+
+### 🎭 **Outro** (`services/outro.js`) - ⭐ **NUEVA CARACTERÍSTICA**
+**Funcionalidad:**
+- **Crossfade suave** entre video principal y outro
+- **Normalización automática** de framerates diferentes
+- **Mezcla inteligente** de audio stereo/mono
+- **Sincronización temporal** perfecta
+- **Compatibilidad universal** (yuv420p)
+
+**Características Técnicas:**
+```javascript
+{
+  crossfadeDuration: 0.3,        // Duración del crossfade en segundos
+  videoNormalization: true,      // Normaliza FPS y dimensiones
+  audioMixing: 'acrossfade',     // Mezcla suave de audio
+  pixelFormat: 'yuv420p',        // Formato universal
+  qualityPreset: 'veryfast',     // Balance velocidad/calidad
+  modernFFmpeg: true             // Usa ffmpeg-static con filtros avanzados
+}
+```
+
+**Algoritmo Inteligente:**
+1. **Análisis de compatibilidad** entre videos (FPS, dimensiones, audio)
+2. **Normalización automática** de framerates para evitar errores de timebase
+3. **Escalado dinámico** del outro para coincidir con video principal
+4. **Crossfade temporal** con timing preciso calculado automáticamente
+5. **Renderizado final** con máxima compatibilidad web/móvil
 Límites, calidad y rendimiento
 Tamaño: subida limitada a 10 MB.
 Duración: pensado para clips entre 18 y 30 s.

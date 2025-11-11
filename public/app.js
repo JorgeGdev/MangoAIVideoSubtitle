@@ -47,8 +47,8 @@ startBtn.addEventListener("click", async () => {
       <div style="margin-top: 1rem;">
         <strong>✓ Done!</strong> 
         <div style="margin-top: 0.8rem; display: flex; flex-direction: column; gap: 0.5rem;">
-          <a href="${procData.downloadUrl}" class="download-link">🎥 Download Video (MP4)</a>
-          <a href="${procData.txtUrl}" class="download-link">📄 Download Subtitles (TXT)</a>
+          <a href="${procData.downloadUrl}" class="download-link">Download Video (MP4)</a>
+          <a href="${procData.txtUrl}" class="download-link">Download Subtitles (TXT)</a>
         </div>
       </div>
     `;

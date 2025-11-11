@@ -8,7 +8,13 @@
     "dev": "nodemon server.js",
     "test": "echo \"No tests yet\" && exit 0"
   },
-  "keywords": ["subtitles", "karaoke", "whisper", "ffmpeg", "video"],
+  "keywords": [
+    "subtitles",
+    "karaoke",
+    "whisper",
+    "ffmpeg",
+    "video"
+  ],
   "author": "",
   "license": "ISC",
   "engines": {
@@ -21,6 +27,7 @@
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
+    "ffmpeg-static": "^5.2.0",
     "fluent-ffmpeg": "^2.1.3",
     "multer": "^2.0.2",
     "openai": "^6.5.0"
