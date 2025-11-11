@@ -109,9 +109,16 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
     if (L.words.length === 0) continue;
 
     // \k por palabra con mínimo
-    const kDurations = L.words.map((w) =>
-      Math.max(minWordSec, Math.max(0, w.end - w.start))
-    );
+    // Ajuste “fit” de \k a la duración real de la línea (menos warmup)
+    const lineDur = Math.max(0, L.end - L.start);
+    const rawDurArr = L.words.map((w) => Math.max(0.01, w.end - w.start)); // base sin mínimos
+    const rawSum = rawDurArr.reduce((a, b) => a + b, 0) || 0.01;
+
+    const usable = Math.max(0.05, lineDur - warmupSec); // tiempo disponible para \k
+    const scale = usable / rawSum;
+
+    // Aplica escala y solo entonces respeta un mínimo suave por palabra
+    const kDurations = rawDurArr.map((d) => Math.max(minWordSec, d * scale));
     const totalK = kDurations.reduce((a, b) => a + b, 0);
 
     // Ventana base sugerida
