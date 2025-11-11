@@ -7,9 +7,9 @@ node_modules/
 # Temporary files
 tmp/
 *.tmp
-*.mp4
-*.ass
-*.txt
+tmp/*.mp4
+tmp/*.ass
+tmp/*.txt
 tmp/*.json
 
 # Logs
