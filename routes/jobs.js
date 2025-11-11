@@ -141,9 +141,9 @@ router.post('/subtitle/:id/process', async (req, res, next) => {
       },
       timing: {
         minWordSec: 0.10,
-        leadSec: 0.20,
+        leadSec: 0.00,
         tailSec: 0.24,
-        warmupCs: 16,
+        warmupCs: 8,
         minInterGapSec: 0.06
       }
     });

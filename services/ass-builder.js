@@ -23,30 +23,26 @@ function buildASS(words, opts = {}) {
   const {
     resX = 1920,
     resY = 1080,
-    font = 'Montserrat',
+    font = "Montserrat",
     fontSize = 60,
-    primary = '&H00FFFFFF&',     // blanco
-    secondary = '&H00FFCC66&',   // azul claro (#66CCFF -> &H00FFCC66&)
+    primary = "&H00FFFFFF&", // blanco
+    secondary = "&H00FFCC66&", // azul claro (#66CCFF -> &H00FFCC66&)
     outline = 3,
     shadow = 0,
-    align = 2,                   // bottom-center
+    align = 2, // bottom-center
     marginV = 60,
     segment = {},
-    timing = {}
+    timing = {},
   } = opts;
 
-  const {
-    gapThresholdSec = 0.5,
-    maxLineDurSec   = 2.8,
-    maxChars        = 42
-  } = segment;
+  const { gapThresholdSec = 0.5, maxLineDurSec = 2.8, maxChars = 42 } = segment;
 
   const {
-    minWordSec     = 0.10,
-    leadSec        = 0.20,
-    tailSec        = 0.24,
-    warmupCs       = 16,
-    minInterGapSec = 0.06
+    minWordSec = 0.1,
+    leadSec = 0.0,
+    tailSec = 0.24,
+    warmupCs = 8,
+    minInterGapSec = 0.06,
   } = timing;
 
   const header = `[Script Info]
@@ -65,12 +61,14 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
   if (!Array.isArray(words) || words.length === 0) return header;
 
   const safe = words
-    .map(w => ({
-      text: String(w.text || '').trim(),
+    .map((w) => ({
+      text: String(w.text || "").trim(),
       start: Number.isFinite(w.start) ? w.start : 0,
-      end:   Number.isFinite(w.end)   ? w.end   : 0
+      end: Number.isFinite(w.end) ? w.end : 0,
     }))
-    .filter(w => w.text && (w.end > w.start || (w.end === w.start && w.end > 0)));
+    .filter(
+      (w) => w.text && (w.end > w.start || (w.end === w.start && w.end > 0))
+    );
 
   if (safe.length === 0) return header;
 
@@ -80,17 +78,18 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 
   for (let i = 0; i < safe.length; i++) {
     const w = safe[i];
-    if (i === 0) { addWord(current, w); continue; }
+    if (i === 0) {
+      addWord(current, w);
+      continue;
+    }
 
     const prev = safe[i - 1];
     const gap = w.start - prev.end;
-    const nextDur  = (Math.max(w.end, current.end) - current.start);
+    const nextDur = Math.max(w.end, current.end) - current.start;
     const nextChars = current.textLength + 1 + w.text.length;
 
     const shouldBreak =
-      gap > gapThresholdSec ||
-      nextDur > maxLineDurSec ||
-      nextChars > maxChars;
+      gap > gapThresholdSec || nextDur > maxLineDurSec || nextChars > maxChars;
 
     if (shouldBreak) {
       finalizeLine(rawLines, current);
@@ -102,7 +101,7 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
   finalizeLine(rawLines, current);
 
   // --- Construcción de Events sin solapes ---
-  let events = '';
+  let events = "";
   const warmupSec = Math.max(0, warmupCs / 100);
   let prevEnd = 0;
 
@@ -110,18 +109,20 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
     if (L.words.length === 0) continue;
 
     // \k por palabra con mínimo
-    const kDurations = L.words.map(w => Math.max(minWordSec, Math.max(0, w.end - w.start)));
+    const kDurations = L.words.map((w) =>
+      Math.max(minWordSec, Math.max(0, w.end - w.start))
+    );
     const totalK = kDurations.reduce((a, b) => a + b, 0);
 
     // Ventana base sugerida
     let start = Math.max(0, L.start - leadSec);
-    let end   = start + warmupSec + totalK + tailSec;
+    let end = start + warmupSec + totalK + tailSec;
 
     // Evitar solape con la línea anterior
     if (start < prevEnd + minInterGapSec) {
-      const delta = (prevEnd + minInterGapSec) - start;
+      const delta = prevEnd + minInterGapSec - start;
       start += delta;
-      end   += delta;
+      end += delta;
     }
     prevEnd = end;
 
@@ -130,10 +131,12 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
     for (let i = 0; i < L.words.length; i++) {
       const token = L.words[i].text;
       const durCs = Math.max(1, Math.round(kDurations[i] * 100));
-      text += `{\\k${durCs}}${token}${i < L.words.length - 1 ? ' ' : ''}`;
+      text += `{\\k${durCs}}${token}${i < L.words.length - 1 ? " " : ""}`;
     }
 
-    events += `Dialogue: 0,${toAssTime(start)},${toAssTime(end)},Kara,,0,0,0,,${text}\n`;
+    events += `Dialogue: 0,${toAssTime(start)},${toAssTime(
+      end
+    )},Kara,,0,0,0,,${text}\n`;
   }
 
   return header + events;
@@ -144,12 +147,11 @@ function initLine(firstWord) {
     words: [],
     start: firstWord.start,
     end: firstWord.end,
-    textLength: 0
+    textLength: 0,
   };
   addWord(line, firstWord); // 👈 agrega la primera palabra de inmediato
   return line;
 }
-
 
 function addWord(line, w) {
   line.words.push(w);
@@ -164,8 +166,8 @@ function finalizeLine(lines, line) {
 function toAssTime(t) {
   const h = Math.floor(t / 3600);
   const m = Math.floor((t % 3600) / 60);
-  const s = (t % 60).toFixed(2).padStart(5, '0');
-  return `${h}:${String(m).padStart(2, '0')}:${s}`;
+  const s = (t % 60).toFixed(2).padStart(5, "0");
+  return `${h}:${String(m).padStart(2, "0")}:${s}`;
 }
 
 module.exports = { buildASS };
