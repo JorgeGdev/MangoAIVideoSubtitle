@@ -38,10 +38,10 @@ function buildASS(words, opts = {}) {
   const { gapThresholdSec = 0.5, maxLineDurSec = 2.8, maxChars = 42 } = segment;
 
   const {
-    minWordSec = 0.1,
+    minWordSec = 0.06,
     leadSec = 0.0,
-    tailSec = 0.24,
-    warmupCs = 8,
+    tailSec = 0.12,
+    warmupCs = 6,
     minInterGapSec = 0.06,
   } = timing;
 

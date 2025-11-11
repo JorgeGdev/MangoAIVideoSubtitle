@@ -140,10 +140,10 @@ router.post('/subtitle/:id/process', async (req, res, next) => {
         maxChars: 42
       },
       timing: {
-        minWordSec: 0.10,
+        minWordSec: 0.06,
         leadSec: 0.00,
-        tailSec: 0.24,
-        warmupCs: 8,
+        tailSec: 0.12,
+        warmupCs: 6,
         minInterGapSec: 0.06
       }
     });
