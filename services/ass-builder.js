@@ -33,6 +33,8 @@ function buildASS(words, opts = {}) {
     marginV = 60,
     segment = {},
     timing = {},
+    timeOffset = 0, // ← offset en segundos para agregar a todos los timestamps
+    speedFactor = 1.0, // ← NUEVO: factor para acelerar/decelerar subtítulos (1.2 = 20% más rápido)
   } = opts;
 
   const { gapThresholdSec = 0.5, maxLineDurSec = 2.8, maxChars = 42 } = segment;
@@ -63,8 +65,8 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
   const safe = words
     .map((w) => ({
       text: String(w.text || "").trim(),
-      start: Number.isFinite(w.start) ? w.start : 0,
-      end: Number.isFinite(w.end) ? w.end : 0,
+      start: (Number.isFinite(w.start) ? w.start : 0) * speedFactor, // ← APLICA SPEEDFACTOR
+      end: (Number.isFinite(w.end) ? w.end : 0) * speedFactor,       // ← APLICA SPEEDFACTOR
     }))
     .filter(
       (w) => w.text && (w.end > w.start || (w.end === w.start && w.end > 0))
@@ -121,8 +123,8 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
     const kDurations = rawDurArr.map((d) => Math.max(minWordSec, d * scale));
     const totalK = kDurations.reduce((a, b) => a + b, 0);
 
-    // Ventana base sugerida
-    let start = Math.max(0, L.start - leadSec);
+    // Ventana base sugerida (con offset de tiempo)
+    let start = Math.max(0, L.start - leadSec + timeOffset);
     let end = start + warmupSec + totalK + tailSec;
 
     // Evitar solape con la línea anterior

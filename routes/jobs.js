@@ -9,6 +9,7 @@ const { transcribeToWords } = require("../services/transcriber");
 const { buildASS } = require("../services/ass-builder");
 const { burnWithASS, getTargetDimensions } = require("../services/burner");
 const { buildTextFile } = require("../services/text-exporter");
+const { prependIntroCrossfade } = require("../services/intro");
 const { appendOutroCrossfade } = require("../services/outro");
 const { addBackgroundMusic } = require("../services/bgmix");
 
@@ -74,7 +75,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({
   storage,
-  limits: { fileSize: 10 * 1024 * 1024 },
+  limits: { fileSize: 12 * 1024 * 1024 },
   fileFilter: (_req, file, cb) => {
     const ok =
       file.mimetype === "video/mp4" ||
@@ -115,14 +116,30 @@ router.post("/subtitle/:id/process", async (req, res, next) => {
     console.log("Processing:", rec.id);
     console.log("Input path:", rec.inputPath);
 
-    // 1) Transcribir
-    console.log("Step 1: Transcribing...");
+    // Step 1: Adding intro with crossfade
+    console.log("Step 1: Adding intro with crossfade.");
+    const introPath = path.join(
+      __dirname,
+      "..",
+      "public",
+      "assets",
+      "open.mp4"
+    );
+    const introedPath = rec.inputPath.replace(/\.mp4$/i, "_intro.mp4");
+    await prependIntroCrossfade(introPath, rec.inputPath, introedPath, {
+      durationSec: 0.5,
+    });
+    rec.inputPath = introedPath; // Update input path for next steps
+    console.log("Intro added:", rec.inputPath);
+
+    // Step 2: Transcribing...
+    console.log("Step 2: Transcribing...");
     const words = await transcribeToWords(rec.inputPath);
     fs.writeFileSync(rec.wordsPath, JSON.stringify({ words }, null, 2), "utf8");
     console.log("Transcription complete, words:", words.length);
 
-    // 2) Dimensiones salida (encajada en 1920x1080)
-    console.log("Step 2: Getting dimensions...");
+    // Step 3: Getting dimensions...
+    console.log("Step 3: Getting dimensions...");
     const dims = await getTargetDimensions(rec.inputPath);
     const W = dims.output.width || 1920;
     const H = dims.output.height || 1080;
@@ -136,32 +153,34 @@ router.post("/subtitle/:id/process", async (req, res, next) => {
     // Más arriba (~22% de la altura)
     const marginV = Math.round(H * 0.22);
 
-    // 3) .ASS con color azul claro y NO-SOLAPE
-    console.log("Step 3: Building ASS file...");
+    // Step 4: Building ASS file...
+    console.log("Step 4: Building ASS file...");
     const assText = buildASS(words, {
       font: "Montserrat",
       fontSize,
       marginV,
       primary: "&H00FFFFFF&",
       secondary: "&H00FFCC66&",
+      timeOffset: 1.5, // ← ajuste perfecto ya configurado
+      speedFactor: 0.85, // ← NUEVO: 25% más lento = subtítulos más rápidos relativamente
       segment: {
-        gapThresholdSec: 0.5,
-        maxLineDurSec: 2.8,
-        maxChars: 42,
+        gapThresholdSec: 0.3,
+        maxLineDurSec: 2.0,
+        maxChars: 25,
       },
       timing: {
-        minWordSec: 0.06,
-        leadSec: 0.0,
-        tailSec: 0.12,
-        warmupCs: 6,
-        minInterGapSec: 0.06,
+        minWordSec: 0.03,
+        leadSec: -0.3,
+        tailSec: 0.03,
+        warmupCs: 1,
+        minInterGapSec: 0.01,
       },
     });
     fs.writeFileSync(rec.assPath, assText, "utf8");
     console.log("ASS file saved:", rec.assPath);
 
-    // 4) Generar archivo de texto con los subtítulos
-    console.log("Step 4: Building text file...");
+    // Step 5: Building text file...
+    console.log("Step 5: Building text file...");
     const txtContent = buildTextFile(words, {
       gapThresholdSec: 0.5,
       maxLineDurSec: 2.8,
@@ -176,12 +195,12 @@ router.post("/subtitle/:id/process", async (req, res, next) => {
     rec.outputName = stampedName;
     console.log("Output path:", rec.outPath);
 
-    // Step 5: Burning subtitles with FFmpeg.
+    // Step 6: Burning subtitles with FFmpeg.
     await burnWithASS(rec.inputPath, rec.assPath, rec.outPath);
     console.log("Burn-in complete!");
 
-    // Step 6: Background music mix (low volume)
-    console.log("Step 6: Adding background music (low volume).");
+    // Step 7: Background music mix (low volume)
+    console.log("Step 7: Adding background music (low volume).");
     const musicPath = path.join(
       __dirname,
       "..",
@@ -196,8 +215,8 @@ router.post("/subtitle/:id/process", async (req, res, next) => {
     rec.outPath = bgmPath;
     console.log("BGM mixed:", rec.outPath);
 
-    // Step 7: Appending outro with crossfade
-    console.log("Step 7: Appending outro with crossfade.");
+    // Step 8: Appending outro with crossfade
+    console.log("Step 8: Appending outro with crossfade.");
     const outroPath = path.join(
       __dirname,
       "..",
