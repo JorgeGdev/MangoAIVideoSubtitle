@@ -2,22 +2,92 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>Subtitles for video</title>
+  <title>AI Video Subtitles</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="stylesheet" href="./styles.css" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
-  <main class="wrap">
-    <h1>Subtitles for video</h1>
-    <p class="muted">Upload MP4 ≤ 12 MB. Output: MP4 1080p with karaoke subtitles.</p>
+  <div class="background-overlay"></div>
+  
+  <header class="header">
+    <div class="logo">
+      <i class="fas fa-video"></i>
+      <span>AI Subtitles</span>
+    </div>
+    <div class="tagline">Creativity, Unleashed.</div>
+  </header>
 
-    <form id="form" enctype="multipart/form-data">
-      <input type="file" id="file" accept="video/mp4" />
-      <button id="start" type="button" disabled>Start</button>
-    </form>
+  <main class="container">
+    <div class="hero-section">
+      <h1 class="title">Transform Your Videos</h1>
+      <p class="subtitle">Leverage AI technology to automatically generate karaoke-style subtitles for your videos</p>
+    </div>
 
-    <div id="status"></div>
+    <div class="content-grid">
+      <!-- Upload Section -->
+      <div class="upload-section">
+        <div class="upload-card">
+          <div class="upload-header">
+            <i class="fas fa-cloud-upload-alt"></i>
+            <h3>Upload Your Video</h3>
+          </div>
+          
+          <form id="form" enctype="multipart/form-data">
+            <div class="file-input-wrapper">
+              <input type="file" id="file" accept="video/mp4" />
+              <label for="file" class="file-input-label">
+                <i class="fas fa-plus"></i>
+                <span>Choose MP4 file</span>
+                <small>Maximum 12 MB</small>
+              </label>
+            </div>
+            
+            <button id="start" type="button" disabled class="process-btn">
+              <i class="fas fa-magic"></i>
+              <span>Generate Subtitles</span>
+            </button>
+          </form>
+
+          <div class="features">
+            <div class="feature">
+              <i class="fas fa-robot"></i>
+              <span>AI Powered</span>
+            </div>
+            <div class="feature">
+              <i class="fas fa-hd-video"></i>
+              <span>1080p Output</span>
+            </div>
+            <div class="feature">
+              <i class="fas fa-music"></i>
+              <span>Karaoke Style</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Preview Section -->
+      <div class="preview-section">
+        <div class="preview-card">
+          <div class="preview-header">
+            <i class="fas fa-eye"></i>
+            <h3>Preview</h3>
+          </div>
+          
+          <div class="video-preview" id="videoPreview">
+            <div class="placeholder-content">
+              <i class="fas fa-play-circle"></i>
+              <p>Select a video to see preview</p>
+            </div>
+            <video id="previewVideo" controls style="display: none;"></video>
+          </div>
+        </div>
+        
+        <div id="status" class="status-card"></div>
+      </div>
+    </div>
   </main>
+  
   <script src="./app.js"></script>
 </body>
 </html>
